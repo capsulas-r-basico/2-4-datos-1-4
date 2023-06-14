@@ -1,0 +1,264 @@
+---
+title: "R and databases"
+subtitle: "calidad"
+author: 
+date: '`r Sys.Date()`'
+output:
+  xaringan::moon_reader:
+    seal: false
+    #lib_dir: libs
+    css: xaringan-themer.css
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: False
+      ratio: '13:9'
+---
+
+class: center, middle
+
+.linea-superior[]
+.linea-inferior[]
+
+<img src="imagenes/logo_portada2.png" width="200" />
+
+## INE Educa: Clases abiertas de R
+
+## Proyecto Ciencia de Datos
+
+### Mayo 2023
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = TRUE)
+knitr::opts_chunk$set(message = FALSE, warning = F, eval = T) 
+options(scipen = "999")
+options(knitr.table.format = "html")
+
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer)
+library(dplyr)
+library(magrittr)
+# library(kableExtra)
+```
+ 
+
+---
+
+name: diapo-basica
+background-image: url("imagenes/fondo2.PNG")
+background-size: contain;
+background-position: 100% 0%
+
+# Edición de datos I
+---
+
+template: diapo-basica
+
+Ya sabemos filtrar la tabla para quedarnos con lo que necesitamos.
+
+--
+
+El siguiente paso es modificar columnas existentes o agregarle nuevas columnas en base a información existente
+o externa.
+
+--
+
+Para eso tenemos la función `mutate`.
+
+.center[
+<img src="imagenes/dplyverse.png" width="600" />]
+
+
+
+---
+template: diapo-basica
+
+Para el ejemplo cargaremos la tabla `ejemplo_select.xlsx`
+```{r, eval=T, echo=F}
+tabla = readxl::read_excel('data/ejemplo_select.xlsx')
+ 
+```
+
+```{r, eval=T, echo=F}
+knitr::kable(tabla)
+```
+
+---
+template: diapo-basica
+
+¿Qué formas tenemos para seleccionar columnas?
+```{r xaringan-themer-2, include=FALSE, warning=FALSE}
+
+xaringanExtra::use_panelset()
+```
+
+
+.panelset[
+.panel[.panel-name[nombres]
+
+Por nombre:
+
+```{r, echo=T, eval=F}
+tabla %>% select(id, categoria_1, categoria_2)
+
+```
+
+
+```{r, eval=T, echo=F}
+knitr::kable(tabla %>% select(id, categoria_1, categoria_2))
+```
+
+Seleccionamos columnas `id`, `categoria_1` y `categoria_2`
+
+]
+.panel[.panel-name[posiciones]
+Por posición:
+
+```{r, echo=T, eval=F}
+tabla %>% select(1, 2, 4)
+```
+
+```{r, eval=T, echo=F}
+knitr::kable(tabla %>% select(1, 2, 4 ))
+```
+
+En este caso seleccionamos las columnas n°1, 2 y 4, según el orden que tengan de izquierda a derecha
+]
+.panel[.panel-name[rango]
+Por rango:
+
+```{r, echo=T, eval=F}
+tabla %>% select(id:categoria_3)
+```
+
+```{r, eval=T, echo=F}
+knitr::kable(tabla %>% select(id:categoria_3))
+```
+
+En este caso seleccionamos desde la columna `id` hasta `categoria_3`, según el orden que tengan de izquierda a derecha
+]
+.panel[.panel-name[seleccion_negativa]
+Selección negativa:
+
+```{r, echo=T, eval=F}
+tabla %>% select(-id, -categoria_2)
+```
+
+```{r, eval=T, echo=F}
+knitr::kable(tabla %>% select(-id, -categoria_2))
+```
+
+Con la selección negativa seleccionamos todas las columnas menos las especificadas. En este caso, seleccionamos todas menos `id` y `categoria_2`.
+]
+]
+---
+template: diapo-basica
+
+## starts_with
+
+Si queremos seleccionar todas las columnas que empiecen con los mismos carácteres, podemos usar
+`starts_with()` dentro del `select()`. Obtengamos la columna id y todas las categorías:
+--
+
+```{r, echo=T, eval=F}
+tabla %>% select(id, starts_with('categoria'))
+
+```
+--
+
+```{r, eval=T, echo=F}
+knitr::kable(tabla %>% select(id, starts_with('categoria')))
+```
+
+---
+
+template: diapo-basica
+
+## ends_with
+
+También podríamos querer seleccionar las columnas que terminen con un conjunto de carácteres.
+En este caso usamos `ends_with()` dentro del `select()`. Obtengamos la columna id y todas las columnas
+terminadas en "_1":
+--
+
+```{r, echo=T, eval=F}
+tabla %>% select(id, ends_with('_1'))
+
+```
+--
+
+```{r, eval=T, echo=F}
+knitr::kable(tabla %>% select(id,  ends_with('_1')))
+```
+
+---
+
+template: diapo-basica
+
+## contains
+
+Por último, podríamos querer seleccionar las columnas que contengan un conjunto de carácteres.
+En este caso usamos `contains()` dentro del `select()`. Todas las columnas que contengan el caracter "_":
+--
+
+```{r, echo=T, eval=F}
+tabla %>% select(contains('_'))
+
+```
+--
+
+```{r, eval=T, echo=F}
+knitr::kable(tabla %>% select(contains('_')))
+```
+
+
+---
+
+
+template: diapo-basica
+
+## rename
+
+Otra necesidad común es cambiar los nombres de las variables por unos más prácticos. Para esto
+utilizamos la función `rename` que tiene la siguiente sintaxis:
+
+```{r, eval=F}
+rename(data.frame, nombre_nuevo1 = nombre_viejo1, nombre_nuevo2 = nombre_viejo2, ...)
+```
+--
+Probemos a renombrar las columnas de categorías a `cat_1`, `cat_2`, `cat_3`:
+
+```{r, eval=F}
+tabla %>% rename(cat_1 = categoria_1, cat_2 = categoria_2, cat_3 = categoria_3)
+```
+--
+
+```{r, eval=T, echo=F}
+knitr::kable(tabla %>% rename(cat_1 = categoria_1, cat_2 = categoria_2, cat_3 = categoria_3))
+```
+
+
+
+---
+
+
+
+class: center, middle
+
+.linea-superior[]
+.linea-inferior[]
+
+<img src="imagenes/logo_portada2.png" width="200" />
+
+
+## INE Educa: Clases abiertas de R
+
+## Proyecto Ciencia de Datos
+
+### Mayo 2023
+
+
+
+
