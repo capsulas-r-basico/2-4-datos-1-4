@@ -56,7 +56,7 @@ background-position: 100% 0%
 
 template: diapo-basica
 
-Ya sabemos filtrar la tabla para quedarnos con lo que necesitamos.
+Ya sabemos filtrar tablas para quedarnos con lo que necesitamos.
 
 --
 
@@ -70,180 +70,135 @@ Para eso tenemos la función `mutate`.
 .center[
 <img src="imagenes/dplyverse.png" width="600" />]
 
-
-
----
-template: diapo-basica
-
-Para el ejemplo cargaremos la tabla `ejemplo_select.xlsx`
-```{r, eval=T, echo=F}
-tabla = readxl::read_excel('data/ejemplo_select.xlsx')
- 
-```
-
-```{r, eval=T, echo=F}
-knitr::kable(tabla)
-```
-
----
-template: diapo-basica
-
-¿Qué formas tenemos para seleccionar columnas?
-```{r xaringan-themer-2, include=FALSE, warning=FALSE}
-
-xaringanExtra::use_panelset()
-```
-
-
-.panelset[
-.panel[.panel-name[nombres]
-
-Por nombre:
-
-```{r, echo=T, eval=F}
-tabla %>% select(id, categoria_1, categoria_2)
-
-```
-
-
-```{r, eval=T, echo=F}
-knitr::kable(tabla %>% select(id, categoria_1, categoria_2))
-```
-
-Seleccionamos columnas `id`, `categoria_1` y `categoria_2`
-
-]
-.panel[.panel-name[posiciones]
-Por posición:
-
-```{r, echo=T, eval=F}
-tabla %>% select(1, 2, 4)
-```
-
-```{r, eval=T, echo=F}
-knitr::kable(tabla %>% select(1, 2, 4 ))
-```
-
-En este caso seleccionamos las columnas n°1, 2 y 4, según el orden que tengan de izquierda a derecha
-]
-.panel[.panel-name[rango]
-Por rango:
-
-```{r, echo=T, eval=F}
-tabla %>% select(id:categoria_3)
-```
-
-```{r, eval=T, echo=F}
-knitr::kable(tabla %>% select(id:categoria_3))
-```
-
-En este caso seleccionamos desde la columna `id` hasta `categoria_3`, según el orden que tengan de izquierda a derecha
-]
-.panel[.panel-name[seleccion_negativa]
-Selección negativa:
-
-```{r, echo=T, eval=F}
-tabla %>% select(-id, -categoria_2)
-```
-
-```{r, eval=T, echo=F}
-knitr::kable(tabla %>% select(-id, -categoria_2))
-```
-
-Con la selección negativa seleccionamos todas las columnas menos las especificadas. En este caso, seleccionamos todas menos `id` y `categoria_2`.
-]
-]
----
-template: diapo-basica
-
-## starts_with
-
-Si queremos seleccionar todas las columnas que empiecen con los mismos carácteres, podemos usar
-`starts_with()` dentro del `select()`. Obtengamos la columna id y todas las categorías:
 --
 
-```{r, echo=T, eval=F}
-tabla %>% select(id, starts_with('categoria'))
+Su sintaxis es la siguiente:
 
-```
 --
-
-```{r, eval=T, echo=F}
-knitr::kable(tabla %>% select(id, starts_with('categoria')))
-```
-
----
-
-template: diapo-basica
-
-## ends_with
-
-También podríamos querer seleccionar las columnas que terminen con un conjunto de carácteres.
-En este caso usamos `ends_with()` dentro del `select()`. Obtengamos la columna id y todas las columnas
-terminadas en "_1":
---
-
-```{r, echo=T, eval=F}
-tabla %>% select(id, ends_with('_1'))
-
-```
---
-
-```{r, eval=T, echo=F}
-knitr::kable(tabla %>% select(id,  ends_with('_1')))
-```
-
----
-
-template: diapo-basica
-
-## contains
-
-Por último, podríamos querer seleccionar las columnas que contengan un conjunto de carácteres.
-En este caso usamos `contains()` dentro del `select()`. Todas las columnas que contengan el caracter "_":
---
-
-```{r, echo=T, eval=F}
-tabla %>% select(contains('_'))
-
-```
---
-
-```{r, eval=T, echo=F}
-knitr::kable(tabla %>% select(contains('_')))
-```
-
-
----
-
-
-template: diapo-basica
-
-## rename
-
-Otra necesidad común es cambiar los nombres de las variables por unos más prácticos. Para esto
-utilizamos la función `rename` que tiene la siguiente sintaxis:
 
 ```{r, eval=F}
-rename(data.frame, nombre_nuevo1 = nombre_viejo1, nombre_nuevo2 = nombre_viejo2, ...)
+mutate(data.frame, nombre_columna1 = expresion1,
+       nombre_columna2 = expresion2, ...)
+```
+
+
+---
+template: diapo-basica
+
+## Mutate: crear columna nueva
+
+Para ilustrar la creación de columnas, creemos un dataframe de ejemplo:
+
+```{r, eval=T, echo=T}
+compras = data.frame(cantidad = c('4', '2', '5'),
+                     precio = c(200, 300, 400))
+compras
 ```
 --
-Probemos a renombrar las columnas de categorías a `cat_1`, `cat_2`, `cat_3`:
+Queremos crear una columna llamada `valor_total`, que sea la multiplicación de las dos columnas:
+--
+```{r, eval=F, echo=T}
+compras_completo = compras %>% mutate(valor_total = cantidad * precio)
 
-```{r, eval=F}
-tabla %>% rename(cat_1 = categoria_1, cat_2 = categoria_2, cat_3 = categoria_3)
+```
+--
+¿Qué pasó?
+
+--
+
+.center[
+<img src="imagenes/error1.png" width="300" />]
+
+
+---
+template: diapo-basica
+## Mutate: ~~crear columna nueva~~ reemplazar columna existente
+
+Primero debemos asegurarnos que ambas columnas sean numéricas:
+
+```{r}
+compras %>% lapply(class)
+```
+--
+Transformamos `cantidad` en numérica, para habilitar operaciones de este tipo:
+
+```{r}
+compras_numeric = compras %>% mutate(cantidad = as.numeric(cantidad))
+
+```
+--
+```{r}
+compras_numeric %>% lapply(class)
+```
+---
+template: diapo-basica
+## Mutate: crear columna nueva
+
+Volvemos a nuestro ejemplo original:
+--
+```{r, eval=T, echo=T}
+compras_completo = compras_numeric %>% mutate(valor_total = cantidad * precio)
+
+```
+--
+```{r, eval=T, echo=F}
+knitr::kable(compras_completo) 
+
+```
+---
+
+template: diapo-basica
+##Mutate
+
+¿Qué otras cosas podemos hacer?
+
+--
+
+```{r, eval=T, echo=T}
+
+compras_mas_completo = compras_completo %>% mutate(
+  valor_constante = 10,
+  id_fila = row_number(),
+  col_modificada = precio - 100,
+  num_digitos = valor_total %>% as.character %>% stringr::str_length()
+)
+
 ```
 --
 
 ```{r, eval=T, echo=F}
-knitr::kable(tabla %>% rename(cat_1 = categoria_1, cat_2 = categoria_2, cat_3 = categoria_3))
+knitr::kable(compras_mas_completo) 
+
 ```
+
+--
+
+En resumen, de alguna forma u otra, podemos realizar cualquier modificación que
+se nos ocurra a las columnas de la tabla.
+
+--
+
+Las opciones son cientos, por lo que la recomendación es: "Ante la duda, googlear"
+
+---
+template: diapo-basica
+
+## Mutate: anexo
+
+Funciones clásicas para transformación de columnas:
+
+- `as.numeric` pasa variable a formato numérico. Filas deben contener solo números para que pueda utilizarse.
+- `as.character` pasa variable a formato texto.
+- `as.factor` pasa variable a formato factor, práctico en gráficos y eficiente en términos de memoria.
+- `as.Date` pasa variable a formato fecha. Filas deben cumplir con formato específico para que puedan ser interpretadas como fechas.
+- `toupper` / `tolower`: pasa columna string a mayúsculas/minúsculas, respectivamente.
+- `replace_NA`: reemplaza valores nulos (NA) con el valor especificado.
+- `round`: redonea columna numérica según la precisión que se ingrese. Por defecto, deja en valor
+entero un número decimal.
 
 
 
 ---
-
-
 
 class: center, middle
 
@@ -258,7 +213,3 @@ class: center, middle
 ## Proyecto Ciencia de Datos
 
 ### Mayo 2023
-
-
-
-
