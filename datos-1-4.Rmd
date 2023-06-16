@@ -195,6 +195,8 @@ Funciones clásicas para transformación de columnas:
 - `replace_NA`: reemplaza valores nulos (NA) con el valor especificado.
 - `round`: redonea columna numérica según la precisión que se ingrese. Por defecto, deja en valor
 entero un número decimal.
+- `sum/mean/max/min/sd/median`: Obtiene la suma, media, máximo, mínimo, desviación estándar y mediana, respectivamente, de la columna numérica especificada.
+- `paste`: concatena los valores de dos columnas string, separadas por un espacio.
 
 
 

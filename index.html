@@ -4,8 +4,8 @@
     <title>R and databases</title>
     <meta charset="utf-8" />
     <meta name="author" content="" />
-    <meta name="date" content="2023-06-05" />
-    <script src="visualizacion-1_files/header-attrs-2.21/header-attrs.js"></script>
+    <meta name="date" content="2023-06-15" />
+    <script src="datos-1-4_files/header-attrs-2.22/header-attrs.js"></script>
     <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
   </head>
   <body>
@@ -28,17 +28,247 @@ class: center, middle
 
 
 
-
-
+ 
 
 ---
 
-
+name: diapo-basica
 background-image: url("imagenes/fondo2.PNG")
 background-size: contain;
 background-position: 100% 0%
 
-# EJEMPLO
+# Edición de datos I
+---
+
+template: diapo-basica
+
+Ya sabemos filtrar tablas para quedarnos con lo que necesitamos.
+
+--
+
+El siguiente paso es modificar columnas existentes o agregarle nuevas columnas en base a información existente
+o externa.
+
+--
+
+Para eso tenemos la función `mutate`.
+
+.center[
+&lt;img src="imagenes/dplyverse.png" width="600" /&gt;]
+
+--
+
+Su sintaxis es la siguiente:
+
+--
+
+
+```r
+mutate(data.frame, nombre_columna1 = expresion1,
+       nombre_columna2 = expresion2, ...)
+```
+
+
+---
+template: diapo-basica
+
+## Mutate: crear columna nueva
+
+Para ilustrar la creación de columnas, creemos un dataframe de ejemplo:
+
+
+```r
+compras = data.frame(cantidad = c('4', '2', '5'),
+                     precio = c(200, 300, 400))
+compras
+```
+
+```
+##   cantidad precio
+## 1        4    200
+## 2        2    300
+## 3        5    400
+```
+--
+Queremos crear una columna llamada `valor_total`, que sea la multiplicación de las dos columnas:
+--
+
+```r
+compras_completo = compras %&gt;% mutate(valor_total = cantidad * precio)
+```
+--
+¿Qué pasó?
+
+--
+
+.center[
+&lt;img src="imagenes/error1.png" width="300" /&gt;]
+
+
+---
+template: diapo-basica
+## Mutate: ~~crear columna nueva~~ reemplazar columna existente
+
+Primero debemos asegurarnos que ambas columnas sean numéricas:
+
+
+```r
+compras %&gt;% lapply(class)
+```
+
+```
+## $cantidad
+## [1] "character"
+## 
+## $precio
+## [1] "numeric"
+```
+--
+Transformamos `cantidad` en numérica, para habilitar operaciones de este tipo:
+
+
+```r
+compras_numeric = compras %&gt;% mutate(cantidad = as.numeric(cantidad))
+```
+--
+
+```r
+compras_numeric %&gt;% lapply(class)
+```
+
+```
+## $cantidad
+## [1] "numeric"
+## 
+## $precio
+## [1] "numeric"
+```
+---
+template: diapo-basica
+## Mutate: crear columna nueva
+
+Volvemos a nuestro ejemplo original:
+--
+
+```r
+compras_completo = compras_numeric %&gt;% mutate(valor_total = cantidad * precio)
+```
+--
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; cantidad &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; precio &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; valor_total &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 200 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 800 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 300 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 600 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 400 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2000 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+---
+
+template: diapo-basica
+##Mutate
+
+¿Qué otras cosas podemos hacer?
+
+--
+
+
+```r
+compras_mas_completo = compras_completo %&gt;% mutate(
+  valor_constante = 10,
+  id_fila = row_number(),
+  col_modificada = precio - 100,
+  num_digitos = valor_total %&gt;% as.character %&gt;% stringr::str_length()
+)
+```
+--
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; cantidad &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; precio &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; valor_total &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; valor_constante &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; id_fila &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; col_modificada &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; num_digitos &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 200 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 800 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 100 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 300 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 600 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 200 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 400 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 300 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+--
+
+En resumen, de alguna forma u otra, podemos realizar cualquier modificación que
+se nos ocurra a las columnas de la tabla.
+
+--
+
+Las opciones son cientos, por lo que la recomendación es: "Ante la duda, googlear"
+
+---
+template: diapo-basica
+
+## Mutate: anexo
+
+Funciones clásicas para transformación de columnas:
+
+- `as.numeric` pasa variable a formato numérico. Filas deben contener solo números para que pueda utilizarse.
+- `as.character` pasa variable a formato texto.
+- `as.factor` pasa variable a formato factor, práctico en gráficos y eficiente en términos de memoria.
+- `as.Date` pasa variable a formato fecha. Filas deben cumplir con formato específico para que puedan ser interpretadas como fechas.
+- `toupper` / `tolower`: pasa columna string a mayúsculas/minúsculas, respectivamente.
+- `replace_NA`: reemplaza valores nulos (NA) con el valor especificado.
+- `round`: redonea columna numérica según la precisión que se ingrese. Por defecto, deja en valor
+entero un número decimal.
+
+
 
 ---
 
