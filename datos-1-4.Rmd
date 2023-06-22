@@ -26,7 +26,9 @@ class: center, middle
 
 ## Proyecto Ciencia de Datos
 
-### Mayo 2023
+## Herramientas de edición de datos I 
+
+
 
 ```{r setup, include=FALSE}
 options(htmltools.dir.version = TRUE)
@@ -117,7 +119,9 @@ template: diapo-basica
 Primero debemos asegurarnos que ambas columnas sean numéricas:
 
 ```{r}
-compras %>% lapply(class)
+class(compras$cantidad)
+class(compras$precio)
+
 ```
 --
 Transformamos `cantidad` en numérica, para habilitar operaciones de este tipo:
@@ -214,4 +218,5 @@ class: center, middle
 
 ## Proyecto Ciencia de Datos
 
-### Mayo 2023
+## Herramientas de edición de datos I 
+

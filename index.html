@@ -4,7 +4,7 @@
     <title>R and databases</title>
     <meta charset="utf-8" />
     <meta name="author" content="" />
-    <meta name="date" content="2023-06-15" />
+    <meta name="date" content="2023-06-22" />
     <script src="datos-1-4_files/header-attrs-2.22/header-attrs.js"></script>
     <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
   </head>
@@ -23,7 +23,9 @@ class: center, middle
 
 ## Proyecto Ciencia de Datos
 
-### Mayo 2023
+## Herramientas de edición de datos I 
+
+
 
 
 
@@ -113,14 +115,18 @@ Primero debemos asegurarnos que ambas columnas sean numéricas:
 
 
 ```r
-compras %&gt;% lapply(class)
+class(compras$cantidad)
 ```
 
 ```
-## $cantidad
 ## [1] "character"
-## 
-## $precio
+```
+
+```r
+class(compras$precio)
+```
+
+```
 ## [1] "numeric"
 ```
 --
@@ -267,6 +273,8 @@ Funciones clásicas para transformación de columnas:
 - `replace_NA`: reemplaza valores nulos (NA) con el valor especificado.
 - `round`: redonea columna numérica según la precisión que se ingrese. Por defecto, deja en valor
 entero un número decimal.
+- `sum/mean/max/min/sd/median`: Obtiene la suma, media, máximo, mínimo, desviación estándar y mediana, respectivamente, de la columna numérica especificada.
+- `paste`: concatena los valores de dos columnas string, separadas por un espacio.
 
 
 
@@ -284,7 +292,8 @@ class: center, middle
 
 ## Proyecto Ciencia de Datos
 
-### Mayo 2023
+## Herramientas de edición de datos I 
+
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
