@@ -42,7 +42,7 @@ options(knitr.table.format = "html")
 library(xaringanthemer)
 library(dplyr)
 library(magrittr)
-# library(kableExtra)
+library(kableExtra)
 ```
  
 
@@ -161,7 +161,9 @@ template: diapo-basica
 ```{r, eval=T, echo=T}
 
 compras_mas_completo = compras_completo %>% mutate(
-  valor_constante = 10,
+  valor_cte = 10,
+  max_precio = max(precio),
+  min_precio = min(precio),
   id_fila = row_number(),
   col_modificada = precio - 100,
   num_digitos = valor_total %>% as.character %>% stringr::str_length()
@@ -171,8 +173,9 @@ compras_mas_completo = compras_completo %>% mutate(
 --
 
 ```{r, eval=T, echo=F}
-knitr::kable(compras_mas_completo) 
 
+kable(compras_mas_completo, format = "html", table.attr = "style='width:30%;'") %>%
+  kable_classic(full_width = F)
 ```
 
 --

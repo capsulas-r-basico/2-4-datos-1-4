@@ -4,8 +4,10 @@
     <title>R and databases</title>
     <meta charset="utf-8" />
     <meta name="author" content="" />
-    <meta name="date" content="2023-06-22" />
+    <meta name="date" content="2023-06-28" />
     <script src="datos-1-4_files/header-attrs-2.22/header-attrs.js"></script>
+    <script src="datos-1-4_files/kePrint-0.0.1/kePrint.js"></script>
+    <link href="datos-1-4_files/lightable-0.0.1/lightable.css" rel="stylesheet" />
     <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
   </head>
   <body>
@@ -198,7 +200,9 @@ template: diapo-basica
 
 ```r
 compras_mas_completo = compras_completo %&gt;% mutate(
-  valor_constante = 10,
+  valor_cte = 10,
+  max_precio = max(precio),
+  min_precio = min(precio),
   id_fila = row_number(),
   col_modificada = precio - 100,
   num_digitos = valor_total %&gt;% as.character %&gt;% stringr::str_length()
@@ -206,13 +210,15 @@ compras_mas_completo = compras_completo %&gt;% mutate(
 ```
 --
 
-&lt;table&gt;
+&lt;table style='width:30%; font-family: "Arial Narrow", "Source Sans Pro", sans-serif; width: auto !important; margin-left: auto; margin-right: auto;' class=" lightable-classic"&gt;
  &lt;thead&gt;
   &lt;tr&gt;
    &lt;th style="text-align:right;"&gt; cantidad &lt;/th&gt;
    &lt;th style="text-align:right;"&gt; precio &lt;/th&gt;
    &lt;th style="text-align:right;"&gt; valor_total &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; valor_constante &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; valor_cte &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; max_precio &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; min_precio &lt;/th&gt;
    &lt;th style="text-align:right;"&gt; id_fila &lt;/th&gt;
    &lt;th style="text-align:right;"&gt; col_modificada &lt;/th&gt;
    &lt;th style="text-align:right;"&gt; num_digitos &lt;/th&gt;
@@ -224,6 +230,8 @@ compras_mas_completo = compras_completo %&gt;% mutate(
    &lt;td style="text-align:right;"&gt; 200 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 800 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 400 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 200 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 100 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
@@ -233,6 +241,8 @@ compras_mas_completo = compras_completo %&gt;% mutate(
    &lt;td style="text-align:right;"&gt; 300 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 600 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 400 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 200 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 200 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
@@ -242,6 +252,8 @@ compras_mas_completo = compras_completo %&gt;% mutate(
    &lt;td style="text-align:right;"&gt; 400 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 2000 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 400 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 200 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 300 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
