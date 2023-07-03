@@ -92,7 +92,7 @@ template: diapo-basica
 Para ilustrar la creación de columnas, creemos un dataframe de ejemplo:
 
 ```{r, eval=T, echo=T}
-compras = data.frame(cantidad = c('4', '2', '5'),
+compras = tibble(cantidad = c('4', '2', '5'),
                      precio = c(200, 300, 400))
 compras
 ```
@@ -132,7 +132,9 @@ compras_numeric = compras %>% mutate(cantidad = as.numeric(cantidad))
 ```
 --
 ```{r}
-compras_numeric %>% lapply(class)
+class(compras_numeric$cantidad)
+class(compras_numeric$precio)
+
 ```
 ---
 template: diapo-basica

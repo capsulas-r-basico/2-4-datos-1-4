@@ -4,8 +4,8 @@
     <title>R and databases</title>
     <meta charset="utf-8" />
     <meta name="author" content="" />
-    <meta name="date" content="2023-06-28" />
-    <script src="datos-1-4_files/header-attrs-2.22/header-attrs.js"></script>
+    <meta name="date" content="2023-07-03" />
+    <script src="datos-1-4_files/header-attrs-2.21/header-attrs.js"></script>
     <script src="datos-1-4_files/kePrint-0.0.1/kePrint.js"></script>
     <link href="datos-1-4_files/lightable-0.0.1/lightable.css" rel="stylesheet" />
     <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
@@ -82,16 +82,18 @@ Para ilustrar la creación de columnas, creemos un dataframe de ejemplo:
 
 
 ```r
-compras = data.frame(cantidad = c('4', '2', '5'),
+compras = tibble(cantidad = c('4', '2', '5'),
                      precio = c(200, 300, 400))
 compras
 ```
 
 ```
+## # A tibble: 3 × 2
 ##   cantidad precio
-## 1        4    200
-## 2        2    300
-## 3        5    400
+##   &lt;chr&gt;     &lt;dbl&gt;
+## 1 4           200
+## 2 2           300
+## 3 5           400
 ```
 --
 Queremos crear una columna llamada `valor_total`, que sea la multiplicación de las dos columnas:
@@ -141,14 +143,18 @@ compras_numeric = compras %&gt;% mutate(cantidad = as.numeric(cantidad))
 --
 
 ```r
-compras_numeric %&gt;% lapply(class)
+class(compras_numeric$cantidad)
 ```
 
 ```
-## $cantidad
 ## [1] "numeric"
-## 
-## $precio
+```
+
+```r
+class(compras_numeric$precio)
+```
+
+```
 ## [1] "numeric"
 ```
 ---
